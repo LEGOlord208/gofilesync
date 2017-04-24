@@ -15,16 +15,25 @@ var used []string
 // a file that is already being synced from/to.
 var ErrUsed = errors.New("file already being synced from/to")
 
+// SyncEvent is used by OnCopy et.c
+type SyncEvent func(src, dst string)
+
 // OnCopy gets called before any attempt to copy.
 // By default logs to console.
-var OnCopy = func(src, dst string) {
+var OnCopy SyncEvent = func(src, dst string) {
 	fmt.Println("Syncing " + src + " to " + dst)
 }
 
 // OnDelete gets called before any attempt to delete a deleted file.
 // By default logs to console.
-var OnDelete = func(src, dst string) {
+var OnDelete SyncEvent = func(src, dst string) {
 	fmt.Println("Deleting " + dst)
+}
+
+// OnSuccess gets called when a sync finished sucessfully.
+// By default logs to console.
+var OnSuccess = func() {
+	fmt.Println("Sync finished")
 }
 
 // SyncData is the sync data file name.

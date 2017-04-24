@@ -34,7 +34,7 @@ func schedule(minutes int) {
 				for _, loc := range data.Locations {
 					err := gofilesync.LazySync(loc.Src, loc.Dst)
 					if err != nil {
-						status(false, err.Error())
+						status(true, err.Error())
 					}
 				}
 			case <-tickerDone:

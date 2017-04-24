@@ -43,6 +43,16 @@ func main() {
 		return
 	}
 
+	gofilesync.OnCopy = func(src, dst string) {
+		status(false, "Syncing "+src)
+	}
+	gofilesync.OnDelete = func(src, dst string) {
+		status(false, "Deleting "+dst)
+	}
+	gofilesync.OnSuccess = func() {
+		statusReset()
+	}
+
 	loadData()
 	schedule(data.Schedule)
 	go initWebserver()
@@ -62,12 +72,12 @@ func onReady() {
 
 	itemExit := systray.AddMenuItem("Exit", "Exit the application")
 
-	status(false, "No issues")
+	statusReset()
 	go func() {
 		for {
 			select {
 			case <-itemStatus.ClickedCh:
-				status(false, "No issues")
+				statusReset()
 			case <-itemConfig.ClickedCh:
 				open.Run("http://localhost" + port + "/")
 			case <-chanStop:
@@ -79,6 +89,9 @@ func onReady() {
 	}()
 }
 
+func statusReset() {
+	status(false, "No issues")
+}
 func status(err bool, message string) {
 	prefix := "Status"
 	if err {

@@ -1,17 +1,15 @@
 #!/bin/bash
 
-function fixfile() {
+function makefile() {
 	linesuffix=""
 	filesuffix=""
-	if [ $1 ]; then
+	if $1; then
 		linesuffix="Err"
 		filesuffix="_err"
 	fi
+	2goarray "icon$linesuffix" main < icon.ico > "icon$filesuffix.go"
 	sed -i "s/ $//; 5s/^.*$/var icon$linesuffix = []byte{/" "icon$filesuffix.go"
 }
 
-2goarray icon main < icon.ico > icon.go
-fixfile false
-
-2goarray iconErr main < icon_err.ico > icon_err.go
-fixfile true
+makefile false
+makefile true

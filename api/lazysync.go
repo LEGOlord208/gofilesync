@@ -45,8 +45,13 @@ func LazySync(src string, dst string) error {
 	if err != nil {
 		return err
 	}
+	err = WriteSyncData(dst, data)
+	if err != nil {
+		return err
+	}
 
-	return WriteSyncData(dst, data)
+	OnSuccess()
+	return nil
 }
 
 func lazy(src, dst string, info os.FileInfo, data map[string]int64) error {

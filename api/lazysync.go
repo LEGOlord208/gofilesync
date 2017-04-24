@@ -26,7 +26,12 @@ func LazySync(src string, dst string) error {
 		if err != nil {
 			return err
 		}
-		return clonefile(src, dst, info)
+		err = clonefile(src, dst, info)
+		if err != nil {
+			return err
+		}
+		OnSuccess()
+		return nil
 	}
 
 	data, err := ReadSyncData(dst)

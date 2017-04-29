@@ -25,6 +25,11 @@ Usage of gofilesync:
     	The source folder to copy.
 ```
 
+### Example
+```
+gofilesync --src folder1 --dst folder2 --lazy
+```
+
 ## API
 
 Heck that's right! As if the command line tools wasn't enough,  
@@ -32,3 +37,12 @@ you can also use the `api` folder
 to make your completely custom sync application in Go!
 
 And don't worry, gofilesync automatically makes sure you don't try to sync the same thing twice at the same time.
+
+### Example
+
+```Go
+err := gofilesync.LazySync("folder1", "folder2")
+if err != nil {
+	// Handle errors
+}
+```

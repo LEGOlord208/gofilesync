@@ -97,6 +97,7 @@ func status(err bool, message string) {
 	if err {
 		systray.SetIcon(iconErr)
 		prefix = "Error"
+		stdutil.PrintErr(prefix+": "+message, nil)
 	} else {
 		systray.SetIcon(icon)
 	}

@@ -49,7 +49,9 @@ func initWebserver() {
 				return
 			}
 
+			data.mutexLocations.Lock()
 			data.Locations = append(data.Locations, location{Src: src, Dst: dst})
+			data.mutexLocations.Unlock()
 			go func() {
 				err := gofilesync.ForceSync(src, dst)
 				if err != nil {
@@ -68,12 +70,16 @@ func initWebserver() {
 				return
 			}
 
+			data.mutexLocations.RLock()
 			if index < 0 || index >= len(data.Locations) {
 				write(w, "Index not within bounds")
 				return
 			}
+			data.mutexLocations.RUnlock()
 
+			data.mutexLocations.Lock()
 			data.Locations = append(data.Locations[:index], data.Locations[index+1:]...)
+			data.mutexLocations.Unlock()
 			write(w, saveData())
 		case "/force-sync":
 			str := trim(r.PostFormValue("index"))
@@ -86,12 +92,14 @@ func initWebserver() {
 				return
 			}
 
+			data.mutexLocations.RLock()
 			if index < 0 || index >= len(data.Locations) {
 				write(w, "Index not within bounds")
 				return
 			}
 
 			loc := data.Locations[index]
+			data.mutexLocations.RUnlock()
 
 			go func() {
 				err := gofilesync.ForceSync(loc.Src, loc.Dst)
@@ -101,7 +109,7 @@ func initWebserver() {
 			}()
 			write(w, "Started force sync...")
 		default:
-			website.Execute(w, data)
+			website.Execute(w, &data)
 		}
 	})
 	err := http.ListenAndServe(port, nil)

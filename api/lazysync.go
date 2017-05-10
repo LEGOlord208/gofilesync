@@ -23,7 +23,7 @@ func LazySync(src string, dst string) error {
 	// I guess I am LazySync is LAZY (ba dum tss)
 	if !info.IsDir() {
 		err := os.Remove(dst)
-		if err != nil {
+		if err != nil && !os.IsNotExist(err) {
 			return err
 		}
 		err = clonefile(src, dst, info)
@@ -133,20 +133,19 @@ func cleanup(src, dst string, info os.FileInfo, data map[string]int64) error {
 				return err
 			}
 		}
-	} else {
-		_, err := os.Lstat(src)
+	}
+	_, err := os.Lstat(src)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+
+		OnDelete(src, dst)
+
+		delete(data, dst)
+		err = os.Remove(dst)
 		if err != nil {
-			if !os.IsNotExist(err) {
-				return err
-			}
-
-			OnDelete(src, dst)
-
-			delete(data, dst)
-			err = os.Remove(dst)
-			if err != nil {
-				return err
-			}
+			return err
 		}
 	}
 	return nil

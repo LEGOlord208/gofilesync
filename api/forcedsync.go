@@ -22,7 +22,7 @@ func ForceSync(src string, dst string) error {
 	// Faster and more efficient to just clone directly
 	if !info.IsDir() {
 		err := os.Remove(dst)
-		if err != nil {
+		if err != nil && !os.IsNotExist(err) {
 			return err
 		}
 		err = clonefile(src, dst, info)

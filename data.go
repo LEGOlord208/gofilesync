@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"sync"
 
 	"github.com/legolord208/stdutil"
 )
@@ -13,8 +14,9 @@ type location struct {
 }
 
 var data struct {
-	Schedule  int
-	Locations []location
+	Schedule       int
+	Locations      []location
+	mutexLocations sync.RWMutex
 }
 
 const dataFile = ".gofilesync"

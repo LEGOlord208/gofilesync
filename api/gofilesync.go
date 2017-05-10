@@ -7,8 +7,10 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
+var mutexUsed sync.Mutex
 var used []string
 
 // ErrUsed is thrown if you attempt to sync
@@ -96,9 +98,15 @@ func clonefile(src, dst string, info os.FileInfo) error {
 }
 
 func use(dirs ...string) {
+	mutexUsed.Lock()
+	defer mutexUsed.Unlock()
+
 	used = append(used, dirs...)
 }
 func isUsed(dirs ...string) bool {
+	mutexUsed.Lock()
+	defer mutexUsed.Unlock()
+
 	for _, dir := range used {
 		for _, dir2 := range dirs {
 			if dir == dir2 {
@@ -109,6 +117,9 @@ func isUsed(dirs ...string) bool {
 	return false
 }
 func unuse(dirs ...string) {
+	mutexUsed.Lock()
+	defer mutexUsed.Unlock()
+
 	var used2 []string
 	for _, dir := range used {
 		contains := false

@@ -58,7 +58,7 @@ func clone(src, dst string, info os.FileInfo, data map[string]int64) error {
 	}
 
 	if info.IsDir() {
-		err := os.Mkdir(dst, 0755)
+		err := os.MkdirAll(dst, 0755)
 		if err != nil {
 			return err
 		}

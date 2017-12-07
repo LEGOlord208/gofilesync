@@ -1,3 +1,9 @@
+# Archived
+
+This thing is useless compared to [rsync](https://en.wikipedia.org/wiki/Rsync) and friends.
+
+-------------------------------
+
 # gofilesync
 
 **gofilesync** is a complete rewrite of [FolderSync](https://legolord208.github.io/software#foldersync) (sort of accidentally stolen name from an android app, I know)  
